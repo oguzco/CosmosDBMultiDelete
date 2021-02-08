@@ -54,7 +54,7 @@ interval(50).pipe(
 interval(50).pipe(
     exhaustMap(()=>new Promise( async(resolve)=>{
         //Do not overpopulate queue
-        if( ids.length > 500 ){
+        if( ids.length > 1e5 ){
             resolve();
             return;
         }
