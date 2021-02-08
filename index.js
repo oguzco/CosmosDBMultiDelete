@@ -69,7 +69,11 @@ interval(50).pipe(
 
             findResponse = await new Promise( resolve2=>   
                 cosmos.database(process.env.COSMOS_DATABASE).container(process.env.COSMOS_CONTAINER).items
-                .query(process.env.COSMOS_DELETEQUERY + ( minId != null ? " and c."+process.env.COSMOS_PARTITIONKEY+" > " + minId : "" ) )
+                .query(
+                    process.env.COSMOS_DELETEQUERY + 
+                    ( minId != null ? " and c."+process.env.COSMOS_PARTITIONKEY+" > " + minId : "" ) + 
+                    " order by c."+process.env.COSMOS_PARTITIONKEY+" asc" 
+                )
                 .fetchAll()
                 .then(resolve2)
                 .catch(resolve2)
