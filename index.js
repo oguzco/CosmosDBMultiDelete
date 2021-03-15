@@ -67,10 +67,17 @@ interval(50).pipe(
                 minId = '"'+minId[ process.env.COSMOS_PARTITIONKEY ]+'"';
             }
 
+            let deleteQuery = process.env.COSMOS_DELETEQUERY;
+
+            //support up to 10 custom parameters
+            for(let  i = 1 ; i <= 10 ; i++ )
+                if( process.env["JS_PARAM"+i] > '' )
+                    deleteQuery = deleteQuery.split('@JS_PARAM'+i).join( eval(process.env["JS_PARAM"+i]) );
+
             findResponse = await new Promise( resolve2=>   
                 cosmos.database(process.env.COSMOS_DATABASE).container(process.env.COSMOS_CONTAINER).items
                 .query(
-                    process.env.COSMOS_DELETEQUERY + 
+                    deleteQuery + 
                     ( minId != null ? " and c."+process.env.COSMOS_PARTITIONKEY+" > " + minId : "" ) + 
                     " order by c."+process.env.COSMOS_PARTITIONKEY+" asc" 
                 )
